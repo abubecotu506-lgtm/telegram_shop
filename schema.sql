@@ -1,8 +1,8 @@
 -- ============================================================
---  مایگریشن ۰۰۰۱: ساخت اولیه جدول‌های دیتابیس فروشگاه
---  این فایل به‌صورت خودکار توسط GitHub Actions اعمال می‌شود.
---  برای تغییرات بعدی اسکیما، فایل جدید با شماره بعدی بسازید
---  (مثلاً: 0002_add_column.sql)
+--  ساختار کامل پایگاه دادهٔ فروشگاه
+--  محتوای این فایل را در کنسول D1 اجرا کنید.
+--  همهٔ دستورها با IF NOT EXISTS نوشته شده‌اند تا اجرای دوباره
+--  برای افزودن جدول‌های تازه خطا ندهد.
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS settings (
@@ -102,3 +102,19 @@ CREATE TABLE IF NOT EXISTS rate_limits (
   count INTEGER DEFAULT 0,
   window_start INTEGER DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS phone_verifications (
+  user_id INTEGER PRIMARY KEY,
+  phone_e164 TEXT NOT NULL,
+  verified_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS panel_admins (
+  user_id INTEGER PRIMARY KEY,
+  password_hash TEXT NOT NULL,
+  created_by INTEGER DEFAULT 0,
+  added_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_panel_admins_password_hash
+  ON panel_admins(password_hash);
