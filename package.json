@@ -1,0 +1,14 @@
+{
+  "name": "telegram-shop",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "ربات فروشگاهی تلگرام روی Cloudflare Workers و D1 با انتشار خودکار از اتصال مستقیم گیت‌هاب",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
