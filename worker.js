@@ -8,6 +8,7 @@ import { renderPanel } from './lib/panel.js';
 import { handlePayReturn } from './lib/pay.js';
 import { showClaimCode } from './lib/db.js';
 import { tgApi } from './lib/telegram.js';
+import { renderMiniApp, handleMiniAppApi } from './lib/miniapp.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -30,6 +31,10 @@ export default {
 
     // پنل وب ادمین
     if (path === '/admin') return renderPanel();
+
+    // مینی‌اپ فروشگاه تلگرام
+    if (path === '/app' && request.method === 'GET') return renderMiniApp();
+    if (path.startsWith('/api/miniapp/')) return handleMiniAppApi(request, env, url);
 
     // API پنل وب
     if (path.startsWith('/api/')) return handleApi(request, env, url);
