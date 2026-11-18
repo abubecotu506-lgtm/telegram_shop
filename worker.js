@@ -9,6 +9,7 @@ import { handlePayReturn } from './lib/pay.js';
 import { showClaimCode } from './lib/db.js';
 import { tgApi } from './lib/telegram.js';
 import { renderMiniApp, handleMiniAppApi } from './lib/miniapp.js';
+import { refreshDollarRate } from './lib/rates.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -49,6 +50,13 @@ export default {
     if (path === '/set-webhook') return setWebhook(request, env, url);
 
     return new Response('Not Found', { status: 404 });
+  },
+
+  async scheduled(controller, env, ctx) {
+    const task = refreshDollarRate(env, env.DB).then((result) => {
+      if (!result.ok) console.error('[Dollar rate] Scheduled refresh failed:', result.error || 'unknown error');
+    }).catch((error) => console.error('[Dollar rate] Scheduled refresh failed:', error));
+    ctx.waitUntil(task);
   },
 };
 
