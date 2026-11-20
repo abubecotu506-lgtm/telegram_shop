@@ -126,3 +126,11 @@ CREATE TABLE IF NOT EXISTS referrals(user_id INTEGER PRIMARY KEY, inviter INTEGE
 CREATE TABLE IF NOT EXISTS ref_clicks(update_id INTEGER PRIMARY KEY, inviter INTEGER NOT NULL);
 CREATE INDEX IF NOT EXISTS referrals_by_inviter ON referrals(inviter);
 CREATE INDEX IF NOT EXISTS clicks_by_inviter ON ref_clicks(inviter);
+-- Only temporary menu message identifiers; never stores message content.
+CREATE TABLE IF NOT EXISTS chat_menu_messages (
+  chat_id INTEGER NOT NULL,
+  message_id INTEGER NOT NULL,
+  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  PRIMARY KEY(chat_id,message_id)
+);
+CREATE INDEX IF NOT EXISTS chat_menu_expiry ON chat_menu_messages(created_at);

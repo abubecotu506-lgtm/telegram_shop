@@ -54,6 +54,7 @@ export default {
   },
 
   async scheduled(controller, env, ctx) {
+    ctx.waitUntil(env.DB.prepare('DELETE FROM chat_menu_messages WHERE created_at <= unixepoch()-172800').run().catch(e=>console.warn('menu expiry:',e.message)));
     const task = refreshDollarRate(env, env.DB).then((result) => {
       if (!result.ok) console.error('[Dollar rate] Scheduled refresh failed:', result.error || 'unknown error');
     }).catch((error) => console.error('[Dollar rate] Scheduled refresh failed:', error));
