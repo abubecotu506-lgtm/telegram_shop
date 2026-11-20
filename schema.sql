@@ -42,6 +42,9 @@ CREATE TABLE IF NOT EXISTS orders (
   receipt_type TEXT DEFAULT '',
   authority TEXT DEFAULT '',
   ref_id TEXT DEFAULT '',
+  account_details TEXT DEFAULT '',
+  commission INTEGER DEFAULT 0,
+  inviter INTEGER,
   delivery_sent INTEGER DEFAULT 0,
   admin_note TEXT DEFAULT '',
   created_at TEXT DEFAULT (datetime('now')),
@@ -118,3 +121,8 @@ CREATE TABLE IF NOT EXISTS panel_admins (
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_panel_admins_password_hash
   ON panel_admins(password_hash);
+
+CREATE TABLE IF NOT EXISTS referrals(user_id INTEGER PRIMARY KEY, inviter INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS ref_clicks(update_id INTEGER PRIMARY KEY, inviter INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS referrals_by_inviter ON referrals(inviter);
+CREATE INDEX IF NOT EXISTS clicks_by_inviter ON ref_clicks(inviter);
