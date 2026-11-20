@@ -25,6 +25,7 @@ export default {
 
     // وب‌هوک تلگرام
     if (path === '/webhook' && request.method === 'POST') {
+      if (!env.WEBHOOK_SECRET || request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== env.WEBHOOK_SECRET) return new Response('Forbidden',{status:403});
       const update = await request.json().catch(() => null);
       if (update) ctx.waitUntil(handleUpdate(update, env, ctx, url.origin).catch((e) => console.error('update error:', e)));
       return new Response('OK');
@@ -68,8 +69,9 @@ async function setWebhook(request, env, url) {
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
   }
+  if (!/^[A-Za-z0-9_-]{1,256}$/.test(env.WEBHOOK_SECRET || '')) return new Response('ابتدا WEBHOOK_SECRET را تنظیم کنید.',{status:400});
   const webhookUrl = url.origin + '/webhook';
-  const res = await tgApi(env, 'setWebhook', { url: webhookUrl, drop_pending_updates: true });
+  const res = await tgApi(env, 'setWebhook', { url: webhookUrl, secret_token: env.WEBHOOK_SECRET, drop_pending_updates: false });
   return new Response(res.ok ? '✅ وب‌هوک با موفقیت تنظیم شد:\n' + webhookUrl : '❌ خطا در تنظیم وب‌هوک:\n' + JSON.stringify(res), {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
   });
